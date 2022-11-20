@@ -1,0 +1,11 @@
+.form-content {
+    display: flex;
+    align-content: center;
+    flex-direction: column;
+}
+
+.form-card {
+    width: 50%;
+    margin: auto;
+    top: 50px;
+}

@@ -1,0 +1,56 @@
+<mat-card class="form-card">
+    <mat-card-title>Ajout d'un nouveau plan repas</mat-card-title>
+    <mat-card-content class="form-content">
+        <mat-form-field appearance="fill">
+            <mat-label>Catégorie</mat-label>
+            <mat-select [(ngModel)]="category">
+                <mat-option value="Famille">Famille</mat-option>
+                <mat-option value="Vegetarien">Végétarien</mat-option>
+                <mat-option value="Pescetarien">Pescétarien</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field *ngIf="category=='Famille'" appearance="fill">
+            <mat-label>Sous-catégorie</mat-label>
+            <mat-select [(ngModel)]="subcategory">
+                <mat-option value="Rapide">Rapide</mat-option>
+                <mat-option value="Facile">Facile</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field *ngIf="category=='Vegetarien'" appearance="fill">
+            <mat-label>Type de repas</mat-label>
+            <input matInput type="text">
+        </mat-form-field>
+
+        <mat-form-field *ngIf="category=='Pescetarien'" appearance="fill">
+            <mat-label>Type de poisson</mat-label>
+            <input matInput type="text">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Fréquence</mat-label>
+            <mat-select>
+                <mat-option value="Quotidien">Quotidien</mat-option>
+                <mat-option value="Hebdomadaire">Hebdomadaire</mat-option>
+                <mat-option value="Bihebdomadaire">Bihebdomadaire</mat-option>
+                <mat-option value="Mensuel">Mensuel</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Calories</mat-label>
+            <input matInput type="number" min="0">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Nombre de personnes</mat-label>
+            <input matInput type="number" min="0" step="1">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Prix</mat-label>
+            <input matInput type="number" min="0">
+        </mat-form-field>
+    </mat-card-content>
+</mat-card>

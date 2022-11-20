@@ -35,12 +35,12 @@ export class Application {
 
   private errorHandeling(): void {
     // Gestion des erreurs
-    this.app.use((_req: express.Request, _res: express.Response, next: express.NextFunction) => {
+    this.app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
       const err: Error = new Error("Not Found");
       (err as any).status = 404;
       next(err);
     });
-    this.app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+    this.app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
       res.status(err.status || this.internalError);
       res.send({
         message: err.message,

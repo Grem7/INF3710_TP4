@@ -7,6 +7,7 @@ import { AddComponent } from "../add-page/add.component";
 const routes: Routes = [
   { path: "app", component: AppComponent },
   { path: "add", component: AddComponent }
+
 ];
 
 @NgModule({

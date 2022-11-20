@@ -44,12 +44,12 @@ let Application = class Application {
     }
     errorHandeling() {
         // Gestion des erreurs
-        this.app.use((_req, _res, next) => {
+        this.app.use((req, res, next) => {
             const err = new Error("Not Found");
             err.status = 404;
             next(err);
         });
-        this.app.use((err, _req, res, _next) => {
+        this.app.use((err, req, res, next) => {
             res.status(err.status || this.internalError);
             res.send({
                 message: err.message,
