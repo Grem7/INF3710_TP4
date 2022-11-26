@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS Client(
 
 CREATE TABLE IF NOT EXISTS Telephone(
 	numeroclient SERIAL REFERENCES Client,
-	numerodetelephone INTEGER,
+	numerodetelephone VARCHAR(12),
 	PRIMARY KEY (numeroclient, numerodetelephone)
 );
 
