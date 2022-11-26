@@ -14,4 +14,34 @@ export class DatabaseService {
   };
 
   public pool: pg.Pool = new pg.Pool(this.connectionConfig);
+
+  public async getAllFromTable(tableName: string): Promise<pg.QueryResult> {
+      const client = await this.pool.connect();
+
+      const queryResponse = await client.query(`SELECT * FROM public.${tableName}`);
+
+      client.release();
+
+      return queryResponse;
+  }
+
+  public async getColumnsFromTable(tableName: string, ...columns: string[]): Promise<pg.QueryResult> {
+    const client = await this.pool.connect();
+
+    const queryResponse = await client.query(`SELECT ${columns.join()} FROM public.${tableName}`);
+    
+    client.release();
+
+    return queryResponse;
+  }
+
+  public async addToTable(tableName: string, ...values: any[]) : Promise<pg.QueryResult> {
+    const client = await this.pool.connect();
+
+    const queryResponse = await client.query(`INSERT INTO ${tableName} VALUES (${values.join()}) RETURNING *`);
+
+    client.release();
+
+    return queryResponse;
+  }
 }

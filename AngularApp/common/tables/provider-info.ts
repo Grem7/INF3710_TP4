@@ -1,0 +1,1 @@
+export type ProviderInfo = { id: number, name: string; address: string };

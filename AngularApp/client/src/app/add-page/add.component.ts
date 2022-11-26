@@ -1,4 +1,6 @@
 import { Component, OnInit } from "@angular/core";
+import { ProviderInfo } from "../../../../common/tables/provider-info";
+import { CommunicationService } from "../services/communication.service";
 
 @Component({
   selector: "add-page",
@@ -10,10 +12,18 @@ export class AddComponent implements OnInit {
     subcategory: string;
     mealType: string;
     fishBreed: string;
-    frequence: string;
+    frequency: string;
+    prepTime: number;
+    nbIngredients: number;
     calories: number;
     nbPeople: number;
     price: number;
+    providerId: number;
+    providers: ProviderInfo[];
 
-    public ngOnInit(): void { }
+    constructor (private communicationService: CommunicationService) {}
+
+    public ngOnInit(): void {
+        this.communicationService.getProviders().subscribe((newProviders) => this.providers = newProviders);
+    }
 }

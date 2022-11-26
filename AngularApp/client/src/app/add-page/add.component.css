@@ -9,3 +9,11 @@
     margin: auto;
     top: 50px;
 }
+
+#add-button {
+    position: relative;
+    width: 15%;
+    left: 85%;
+    background-color:blueviolet;
+    color: white;
+}

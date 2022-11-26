@@ -1,11 +1,11 @@
 CREATE TABLE IF NOT EXISTS Fournisseur(
-	numerofournisseur INTEGER PRIMARY KEY,
+	numerofournisseur SERIAL PRIMARY KEY,
 	nomfournisseur VARCHAR(20),
 	adressefournisseur VARCHAR(100)
 );
 
 CREATE TABLE IF NOT EXISTS Client(
-	numeroclient INTEGER PRIMARY KEY,
+	numeroclient SERIAL PRIMARY KEY,
 	nomclient VARCHAR(20),
 	prenomclient VARCHAR(20),
 	adressecourrielclient VARCHAR(50),
@@ -15,25 +15,25 @@ CREATE TABLE IF NOT EXISTS Client(
 );
 
 CREATE TABLE IF NOT EXISTS Telephone(
-	numeroclient INTEGER REFERENCES Client,
+	numeroclient SERIAL REFERENCES Client,
 	numerodetelephone INTEGER,
 	PRIMARY KEY (numeroclient, numerodetelephone)
 );
 
 CREATE TABLE IF NOT EXISTS Planrepas(
-	numeroplan INTEGER PRIMARY KEY, 
-	categorie VARCHAR(20) CHECK categorie IN ('Famille','Pescetarien','Vegetarian', 'Divers'),
-	frequence VARCHAR(20) CHECK frequence IN ('Hebdomadaire', 'Mensuel', 'Bihebdomadaire','Quotidien'),
-	nbpersonnes INTEGER CHECK nbpersonnes > 0,
-	nbcalories INTEGER CHECK nbcalories > 0,
+	numeroplan SERIAL PRIMARY KEY, 
+	categorie VARCHAR(20) CHECK (categorie IN ('Famille','Pescetarien','Vegetarian', 'Divers')),
+	frequence VARCHAR(20) CHECK (frequence IN ('Hebdomadaire', 'Mensuel', 'Bihebdomadaire','Quotidien')),
+	nbpersonnes INTEGER CHECK (nbpersonnes > 0),
+	nbcalories INTEGER CHECK (nbcalories > 0),
 	prix DECIMAL(6,2),
 	numerofournisseur INTEGER REFERENCES Fournisseur NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Abonner(
-	numeroclient INTEGER REFERENCES Client,
+	numeroclient SERIAL REFERENCES Client,
 	numeroplan INTEGER REFERENCES Planrepas,
-	duree INTEGER CHECK duree IN (1,3,6,12) NOT NULL,
+	duree INTEGER CHECK (duree IN (1,3,6,12)) NOT NULL,
 	PRIMARY KEY (numeroclient, numeroplan)
 );
 
@@ -48,33 +48,33 @@ CREATE TABLE IF NOT EXISTS Pescetarien(
 );
 
 CREATE TABLE IF NOT EXISTS Famille(
-	numeroplan INTEGER PRIMARY KEY REFERENCES Planrepas,
+	numeroplan INTEGER PRIMARY KEY REFERENCES Planrepas
 );
 
 CREATE TABLE IF NOT EXISTS Rapide(
 	numeroplan INTEGER PRIMARY KEY REFERENCES Famille,
-	tempsdepreparation INTEGER CHECK tempsdepreparation > 0
+	tempsdepreparation INTEGER CHECK (tempsdepreparation > 0)
 );
 
 CREATE TABLE IF NOT EXISTS Facile(
 	numeroplan INTEGER PRIMARY KEY REFERENCES Famille,
-	nbingredients INTEGER CHECK nbingredients > 0
+	nbingredients INTEGER CHECK (nbingredients > 0)
 );
 
 CREATE TABLE IF NOT EXISTS Kitrepas(
-	numerokitrepas INTEGER PRIMARY KEY,
+	numerokitrepas SERIAL PRIMARY KEY,
 	description VARCHAR(100),
 	numeroplan INTEGER REFERENCES Planrepas NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Image(
-	numeroimage INTEGER PRIMARY KEY,
+	numeroimage SERIAL PRIMARY KEY,
 	donnees VARCHAR(150),
 	numerokitrepas INTEGER REFERENCES Kitrepas NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Ingredient(
-	numeroingredient INTEGER PRIMARY KEY,
+	numeroingredient SERIAL PRIMARY KEY,
 	nomingredient VARCHAR(20),
 	paysingredient VARCHAR(20)
 );
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS Etape(
 	numerokitrepas INTEGER REFERENCES Kitrepas,
 	numeroetape INTEGER,
 	descriptionetape VARCHAR(250),
-	dureeetape INTEGER CHECK dureeetape > 0,
+	dureeetape INTEGER CHECK (dureeetape > 0),
 	numeroetapefairepartie INTEGER,
 	PRIMARY KEY (numerokitrepas, numeroetape)
 );
