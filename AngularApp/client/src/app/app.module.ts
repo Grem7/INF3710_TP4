@@ -8,15 +8,19 @@ import { AppComponent } from "./app.component";
 import { CommunicationService } from "./services/communication.service";
 import { AppMaterialModule } from './modules/material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MealplanComponent } from "./mealplans-page/mealplans.component";
 
+import { MealplanComponent } from "./mealplans-page/mealplans.component";
+import { DeleteDialogComponent } from "./delete-dialog/delete.dialog.component";
+import { EditDialogComponent } from "./edit-dialog/edit.dialog.component";
 import { AddComponent } from "./add-page/add.component";
 
 @NgModule({
   declarations: [
     AppComponent,
     AddComponent,
-    MealplanComponent
+    MealplanComponent,
+    EditDialogComponent,
+    DeleteDialogComponent
   ],
   imports: [
     CommonModule,

@@ -24,15 +24,17 @@
                 </mat-select>
             </mat-form-field>
 
-            <mat-form-field *ngIf="subcategory == 'Rapide'" appearance="fill">
-                <mat-label>Temps de préparation</mat-label>
-                <input [(ngModel)]="prepTime" matInput type="text">
-            </mat-form-field>
-
-            <mat-form-field *ngIf="subcategory=='Facile'" appearance="fill">
-                <mat-label>Nombre d'ingrédients</mat-label>
-                <input [(ngModel)]="nbIngredients" matInput type="text">
-            </mat-form-field>
+            <div *ngIf="category=='Famille'">
+                <mat-form-field *ngIf="subcategory == 'Rapide'" appearance="fill">
+                    <mat-label>Temps de préparation</mat-label>
+                    <input [(ngModel)]="prepTime" matInput type="text">
+                </mat-form-field>
+    
+                <mat-form-field *ngIf="subcategory=='Facile'" appearance="fill">
+                    <mat-label>Nombre d'ingrédients</mat-label>
+                    <input [(ngModel)]="nbIngredients" matInput type="text">
+                </mat-form-field>
+            </div>
     
             <mat-form-field *ngIf="category=='Vegetarien'" appearance="fill">
                 <mat-label>Type de repas</mat-label>

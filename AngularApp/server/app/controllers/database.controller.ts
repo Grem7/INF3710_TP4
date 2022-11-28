@@ -68,12 +68,33 @@ export class DatabaseController {
       })
     });
 
-    
+    router.put('/mealplans', async (req, res) => {
+      const mealplan = req.body;
+
+      this.databaseService.updateInTable(
+        'Planrepas',
+        ['numeroplan', mealplan.id],
+        ['categorie', mealplan.category],
+        ['frequence', mealplan.frequency],
+        ['nbpersonnes', mealplan.nbPeople],
+        ['nbcalories', mealplan.calories],
+        ['prix', mealplan.price],
+        ['numerofournisseur', mealplan.provider?.id]
+    )
+    .then(result => {
+      switch(mealplan.category) {
+        case 'Famille':
+          
+        case 'Vegetarien':
+
+        case 'Pescetarien':
+
+      }
+    });
 
     router.post('/mealplans', async (req, res) => {
       const mealplan = req.body;
-      console.log('Attempting to create a new mealplan...');
-      console.log(mealplan);
+
       this.databaseService.addRowToTable(
         'Planrepas',
         mealplan.id,

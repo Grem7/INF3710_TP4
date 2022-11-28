@@ -30,14 +30,20 @@ export class CommunicationService {
     return this.http.get<MealPlanInfo[]>(this.BASE_URL + '/mealplans');
   }
 
+  updateMealplan(mealplan: MealPlanInfo) : Observable<number> {
+    return this.http.put<number>(this.BASE_URL + '/mealplans', mealplan)
+    .pipe(catchError(this.handleError<number>("updateMealplan")));
+  }
+
   deleteMealplan(id: number) : Observable<number> {
     console.log(`${this.BASE_URL}/mealplans/${id}`);
     return this.http.delete<number>(`${this.BASE_URL}/mealplans/${id}`)
     .pipe(catchError(this.handleError<number>("deleteMealplan")));
   }
 
-  addMealPlan(mealPlan: MealPlanInfo) : Observable<any> {
-    return this.http.post<any>(this.BASE_URL + '/mealplans', mealPlan);
+  addMealplan(mealplan: MealPlanInfo) : Observable<any> {
+    return this.http.post<any>(this.BASE_URL + '/mealplans', mealplan)
+    .pipe(catchError(this.handleError<number>("addMealplan")));
   }
 
   // À DÉCOMMENTER ET À UTILISER LORSQUE VOTRE COMMUNICATION EST IMPLÉMENTÉE

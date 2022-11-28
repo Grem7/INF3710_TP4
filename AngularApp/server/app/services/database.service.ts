@@ -48,6 +48,24 @@ export class DatabaseService {
     return queryResponse;
   }
 
+  public async updateInTable(tableName: string, ...colValuePair: [any, any][]) : Promise<pg.QueryResult> {
+    const client = await this.pool.connect();
+    
+    const format: string[] = [];
+    const values: any[] = [];
+    
+    for (let i = 0; i < colValuePair.length; i++) {
+      format.push(`${colValuePair[i][0]} = $${i}`);
+      values.push(colValuePair[i][1]);
+    }
+
+    const queryResponse = client.query(`UPDATE public.${tableName} SET ${format.join()}`, values);
+
+    client.release();
+
+    return queryResponse;
+  }
+
   public async deleteMealplan(id: number) : Promise<pg.QueryResult> {
     const client = await this.pool.connect();
 

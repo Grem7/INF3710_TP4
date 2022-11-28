@@ -44,6 +44,6 @@ export class AddComponent implements OnInit {
         nbIngredients: this.category == 'Famille' && this.subcategory == 'Facile' ? this.nbIngredients : null
       };
 
-      this.communicationService.addMealPlan(mealplan as MealPlanInfo).subscribe();
+      this.communicationService.addMealplan(mealplan as MealPlanInfo).subscribe();
     }
 }

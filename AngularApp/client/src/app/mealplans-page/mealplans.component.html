@@ -9,6 +9,10 @@
                 </mat-expansion-panel-header>
                 <div class="content">
                     <label>Catégorie: {{mealplan.category}}</label>
+                    <label *ngIf="mealplan.mealType">Type de repas: {{mealplan.mealType}}</label>
+                    <label *ngIf="mealplan.fishBreed">Type de poisson: {{mealplan.fishBreed}}</label>
+                    <label *ngIf="mealplan.prepTime">Temps de préparation: {{mealplan.prepTime}}</label>
+                    <label *ngIf="mealplan.nbIngredients">Nombre d'ingrédients: {{mealplan.nbIngredients}}</label>
                     <label>Fréquence: {{mealplan.frequency}}</label>
                     <label>Nombre de personnes: {{mealplan.nbPeople}}</label>
                     <label>Calories: {{mealplan.calories}}</label>
@@ -16,7 +20,7 @@
                     <label>Fournisseur: {{mealplan.provider.id}} - {{mealplan.provider.name}}</label>
                 </div>
                 <div class="button-container">
-                    <button mat-mini-fab (click)="openEditDialog(meaplan)" class="action-button">
+                    <button mat-mini-fab (click)="openEditDialog(mealplan)" class="action-button">
                         <mat-icon>edit</mat-icon>
                     </button>
                     <button mat-mini-fab (click)="openDeleteDialog(mealplan)" class="action-button">
