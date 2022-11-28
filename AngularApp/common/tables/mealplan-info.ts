@@ -4,6 +4,10 @@ export type MealPlanInfo = {
     frequency: string,
     nbPeople: number,
     calories: number,
-    prices: number,
-    providerId: number
+    price: number,
+    provider: {
+        id: number,
+        name: string,
+        address: string
+    }
 }

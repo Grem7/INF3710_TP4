@@ -1,11 +1,11 @@
 CREATE TABLE IF NOT EXISTS Fournisseur(
-	numerofournisseur SERIAL PRIMARY KEY,
+	numerofournisseur INTEGER PRIMARY KEY,
 	nomfournisseur VARCHAR(20),
 	adressefournisseur VARCHAR(100)
 );
 
 CREATE TABLE IF NOT EXISTS Client(
-	numeroclient SERIAL PRIMARY KEY,
+	numeroclient INTEGER PRIMARY KEY,
 	nomclient VARCHAR(20),
 	prenomclient VARCHAR(20),
 	adressecourrielclient VARCHAR(50),
@@ -15,78 +15,78 @@ CREATE TABLE IF NOT EXISTS Client(
 );
 
 CREATE TABLE IF NOT EXISTS Telephone(
-	numeroclient SERIAL REFERENCES Client,
+	numeroclient INTEGER REFERENCES Client ON UPDATE CASCADE ON DELETE CASCADE,
 	numerodetelephone VARCHAR(12),
 	PRIMARY KEY (numeroclient, numerodetelephone)
 );
 
 CREATE TABLE IF NOT EXISTS Planrepas(
-	numeroplan SERIAL PRIMARY KEY, 
-	categorie VARCHAR(20) CHECK (categorie IN ('Famille','Pescetarien','Vegetarian', 'Divers')),
+	numeroplan INTEGER PRIMARY KEY, 
+	categorie VARCHAR(20) CHECK (categorie IN ('Famille','Pescetarien','Vegetarien', 'Divers')),
 	frequence VARCHAR(20) CHECK (frequence IN ('Hebdomadaire', 'Mensuel', 'Bihebdomadaire','Quotidien')),
 	nbpersonnes INTEGER CHECK (nbpersonnes > 0),
 	nbcalories INTEGER CHECK (nbcalories > 0),
 	prix DECIMAL(6,2),
-	numerofournisseur INTEGER REFERENCES Fournisseur NOT NULL
+	numerofournisseur INTEGER REFERENCES Fournisseur ON UPDATE CASCADE ON DELETE CASCADE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Abonner(
-	numeroclient SERIAL REFERENCES Client,
-	numeroplan INTEGER REFERENCES Planrepas,
+	numeroclient INTEGER REFERENCES Client ON UPDATE CASCADE ON DELETE CASCADE,
+	numeroplan INTEGER REFERENCES Planrepas ON UPDATE CASCADE ON DELETE CASCADE,
 	duree INTEGER CHECK (duree IN (1,3,6,12)) NOT NULL,
 	PRIMARY KEY (numeroclient, numeroplan)
 );
 
-CREATE TABLE IF NOT EXISTS Vegetarian(
-	numeroplan INTEGER PRIMARY KEY REFERENCES Planrepas,
+CREATE TABLE IF NOT EXISTS Vegetarien(
+	numeroplan INTEGER PRIMARY KEY REFERENCES Planrepas ON UPDATE CASCADE ON DELETE CASCADE,
 	typederepas VARCHAR(20)
 );
 
 CREATE TABLE IF NOT EXISTS Pescetarien(
-	numeroplan INTEGER PRIMARY KEY REFERENCES Planrepas,
+	numeroplan INTEGER PRIMARY KEY REFERENCES Planrepas ON UPDATE CASCADE ON DELETE CASCADE,
 	typepoisson VARCHAR(20)
 );
 
 CREATE TABLE IF NOT EXISTS Famille(
-	numeroplan INTEGER PRIMARY KEY REFERENCES Planrepas
+	numeroplan INTEGER PRIMARY KEY REFERENCES Planrepas ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Rapide(
-	numeroplan INTEGER PRIMARY KEY REFERENCES Famille,
+	numeroplan INTEGER PRIMARY KEY REFERENCES Famille ON UPDATE CASCADE ON DELETE CASCADE,
 	tempsdepreparation INTEGER CHECK (tempsdepreparation > 0)
 );
 
 CREATE TABLE IF NOT EXISTS Facile(
-	numeroplan INTEGER PRIMARY KEY REFERENCES Famille,
+	numeroplan INTEGER PRIMARY KEY REFERENCES Famille ON UPDATE CASCADE ON DELETE CASCADE,
 	nbingredients INTEGER CHECK (nbingredients > 0)
 );
 
 CREATE TABLE IF NOT EXISTS Kitrepas(
-	numerokitrepas SERIAL PRIMARY KEY,
+	numerokitrepas INTEGER PRIMARY KEY,
 	description VARCHAR(100),
-	numeroplan INTEGER REFERENCES Planrepas NOT NULL
+	numeroplan INTEGER REFERENCES Planrepas ON UPDATE CASCADE ON DELETE CASCADE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Image(
-	numeroimage SERIAL PRIMARY KEY,
+	numeroimage INTEGER PRIMARY KEY,
 	donnees VARCHAR(150),
-	numerokitrepas INTEGER REFERENCES Kitrepas NOT NULL
+	numerokitrepas INTEGER REFERENCES Kitrepas ON UPDATE CASCADE ON DELETE CASCADE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Ingredient(
-	numeroingredient SERIAL PRIMARY KEY,
+	numeroingredient INTEGER PRIMARY KEY,
 	nomingredient VARCHAR(20),
 	paysingredient VARCHAR(20)
 );
 
 CREATE TABLE IF NOT EXISTS Contenir(
-	numerokitrepas INTEGER REFERENCES Kitrepas,
-	numeroingredient INTEGER REFERENCES Ingredient,
+	numerokitrepas INTEGER REFERENCES Kitrepas ON UPDATE CASCADE ON DELETE CASCADE,
+	numeroingredient INTEGER REFERENCES Ingredient ON UPDATE CASCADE ON DELETE CASCADE,
 	PRIMARY KEY (numerokitrepas, numeroingredient)
 );
 
 CREATE TABLE IF NOT EXISTS Etape(
-	numerokitrepas INTEGER REFERENCES Kitrepas,
+	numerokitrepas INTEGER REFERENCES Kitrepas ON UPDATE CASCADE ON DELETE CASCADE,
 	numeroetape INTEGER,
 	descriptionetape VARCHAR(250),
 	dureeetape INTEGER CHECK (dureeetape > 0),
@@ -105,26 +105,35 @@ INSERT INTO client VALUES(1, 'Gregoire', 'Matis', 'matis.gregoire@polymtl.ca', '
 INSERT INTO telephone VALUES(0, 4504449089);
 INSERT INTO telephone VALUES(1, 9658701250);
 
-INSERT INTO planrepas VALUES(0, 'Famille', 'Mensuel', 4, 1000, 119.99, 0);
-INSERT INTO planrepas VALUES(1, 'Pescetarien', 'Bihebdomadaire', 2, 750, 49.99, 1);
+INSERT INTO planrepas VALUES(0, 'Vegetarien', 'Mensuel', 4, 1000, 119.99, 0);
+INSERT INTO planrepas VALUES(1, 'Vegetarien', 'Bihebdomadaire', 2, 750, 49.99, 1);
+INSERT INTO planrepas VALUES(2, 'Pescetarien', 'Mensuel', 2, 750, 49.99, 0);
+INSERT INTO planrepas VALUES(3, 'Pescetarien', 'Hebdomadaire', 3, 900, 69.99, 1);
+INSERT INTO planrepas VALUES(4, 'Famille', 'Quotidien', 4, 750, 59.99, 0);
+INSERT INTO planrepas VALUES(5, 'Famille', 'Hebdomadaire', 4, 850, 69.99, 1);
+INSERT INTO planrepas VALUES(6, 'Famille', 'Bihebdomadaire', 4, 950, 79.99, 0);
+INSERT INTO planrepas VALUES(7, 'Famille', 'Mensuel', 4, 1050, 99.99, 1);
+
 
 INSERT INTO abonner VALUES(0, 0, 3);
 INSERT INTO abonner VALUES(1, 1, 12);
 
-INSERT INTO vegetarian VALUES(0, 'dessert tofu');
-INSERT INTO vegetarian VALUES(1, 'patate douce frit');
+INSERT INTO vegetarien VALUES(0, 'dessert tofu');
+INSERT INTO vegetarien VALUES(1, 'patate douce frit');
 
-INSERT INTO pescetarien VALUES(0, 'truite');
-INSERT INTO pescetarien VALUES(1, 'saumon');
+INSERT INTO pescetarien VALUES(2, 'truite');
+INSERT INTO pescetarien VALUES(3, 'saumon');
 
-INSERT INTO famille VALUES(0);
-INSERT INTO famille VALUES(1);
+INSERT INTO famille VALUES(4);
+INSERT INTO famille VALUES(5);
+INSERT INTO famille VALUES(6);
+INSERT INTO famille VALUES(7);
 
-INSERT INTO rapide VALUES(0, 10);
-INSERT INTO rapide VALUES(1, 25);
+INSERT INTO rapide VALUES(4, 10);
+INSERT INTO rapide VALUES(5, 25);
 
-INSERT INTO facile VALUES(0, 4);
-INSERT INTO facile VALUES(1, 7);
+INSERT INTO facile VALUES(6, 4);
+INSERT INTO facile VALUES(7, 7);
 
 INSERT INTO kitrepas VALUES(0, 'lasagne a la sauce bolognese', 0);
 INSERT INTO kitrepas VALUES(1, 'salade cesar', 1);

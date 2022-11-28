@@ -2,8 +2,8 @@ import { Router } from "express";
 import { inject, injectable } from "inversify";
 import { DatabaseService } from "../services/database.service";
 import { ProviderInfo } from "../../../common/tables/provider-info"
+import { MealPlanInfo } from "../../../common/tables/mealplan-info";
 import Types from "../types";
-import { QueryResult } from "pg";
 
 @injectable()
 export class DatabaseController {
@@ -15,46 +15,94 @@ export class DatabaseController {
   public get router(): Router {
     const router: Router = Router();
 
+    router.use(async (req, res, next) => {
+      console.log(`request made on ${req.url}`);
+      next();
+    });
+
+    router.delete('/mealplans/:id', async (req, res) => {
+      const id: number = Number(req.params.id);
+      console.log(`Attempting to delete mealplan numbered ${id}`);
+
+      this.databaseService.deleteMealplan(id)
+      .then(result => {
+        res.json(result.rowCount);
+      })
+      .catch(e => {
+        console.error(e.stack);
+        res.json(-1);
+      });
+    });
+    
     router.get('/providers', async (req, res) => {
-      const queryResponse = await this.databaseService.getAllFromTable('Fournisseur');
-
-      const providers: ProviderInfo[] = [];
-
-      for (let i = 0; i < queryResponse.rowCount; i++) {
-        providers.push({
-          id: queryResponse.rows[i][0],
-          name: queryResponse.rows[i][1],
-          address: queryResponse.rows[i][2]
-        })
-      }
-
-      res.json(providers);
+      this.databaseService.getAllFromTable('Fournisseur').then(result => {
+        const provider: ProviderInfo[] = result.rows.map(element => ({
+          id: element.numerofournisseur,
+          name: element.nomfournisseur,
+          address: element.adressefournisseur
+        } as ProviderInfo));
+        res.json(provider);
+      })
     });
 
-    router.post('/mealPlan', async (req, res) => {
-      const plan = req.body;
-      
-      const queryResult: QueryResult = await this.databaseService.addToTable(
+    router.get('/mealplans', async (req, res) => {
+      this.databaseService.getMealplans().then(result => {
+        const mealplans: MealPlanInfo[] = result.rows.map(element => ({
+          id: element.numeroplan,
+          category: element.categorie,
+          frequency: element.frequence,
+          nbPeople: element.nbpersonnes,
+          calories: element.nbcalories,
+          price: element.prix,
+          provider: {
+            id: element.numerofournisseur,
+            name: element.nomfournisseur,
+            address: element.adressefournisseur
+          },
+          fishBreed: element.typepoisson,
+          mealType: element.typederepas,
+          prepTime: element.tempsdepreparation,
+          nbIngredients: element.nbingredients
+        } as MealPlanInfo));
+        res.json(mealplans);
+      })
+    });
+
+    
+
+    router.post('/mealplans', async (req, res) => {
+      const mealplan = req.body;
+      console.log('Attempting to create a new mealplan...');
+      console.log(mealplan);
+      this.databaseService.addRowToTable(
         'Planrepas',
-        plan.category,
-        plan.frequency,
-        plan.nbPeople,
-        plan.calories,
-        plan.price,
-        plan.providerId
-      );
-
-      const planId: number = queryResult.rows[0][0];
-
-      switch (plan.category) {
-        case 'Famille':
-          
-        case 'Pescetarien':
-
-        case 'Vegetarien':
-      }
+        mealplan.id,
+        mealplan.category,
+        mealplan.frequency,
+        mealplan.nbPeople,
+        mealplan.calories,
+        mealplan.price,
+        mealplan.provider ? mealplan.provider.id : -1
+        )
+      .then(result => {
+        if (mealplan.mealType) this.databaseService.addRowToTable('Vegetarien', mealplan.id, mealplan.mealType);
+        if (mealplan.fishBreed) this.databaseService.addRowToTable('Pescetarien', mealplan.id, mealplan.fishBreed);
+        if (mealplan.prepTime) {
+          this.databaseService.addRowToTable('Famille', mealplan.id);
+          this.databaseService.addRowToTable('Rapide', mealplan.id, mealplan.prepTime);
+        }
+        if (mealplan.nbIngredients) {
+          this.databaseService.addRowToTable('Famille', mealplan.id);
+          this.databaseService.addRowToTable('Facile', mealplan.id, mealplan.nbIngredients);
+        }
+        res.json(result.rowCount);
+      })
+      .catch(e => {
+        console.error(e.stack);
+        res.json(-1);
+      })
     });
-
+    
     return router;
   }
 }

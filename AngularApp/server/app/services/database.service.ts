@@ -35,10 +35,45 @@ export class DatabaseService {
     return queryResponse;
   }
 
-  public async addToTable(tableName: string, ...values: any[]) : Promise<pg.QueryResult> {
+  public async addRowToTable(tableName: string, ...values: any[]) : Promise<pg.QueryResult> {
     const client = await this.pool.connect();
 
-    const queryResponse = await client.query(`INSERT INTO ${tableName} VALUES (${values.join()}) RETURNING *`);
+    const format : string[] = [];
+    for (let i = 0; i < values.length; i++) format.push(`$${i+1}`);
+
+    const queryResponse = await client.query(`INSERT INTO public.${tableName} VALUES (${format.join()})`, values);
+
+    client.release();
+
+    return queryResponse;
+  }
+
+  public async deleteMealplan(id: number) : Promise<pg.QueryResult> {
+    const client = await this.pool.connect();
+
+    const queryResponse = await client.query(`
+      DELETE FROM public.Planrepas WHERE numeroplan = ${id}
+    `);
+
+    client.release();
+
+    return queryResponse;
+  }
+
+  public async getMealplans() : Promise<pg.QueryResult> {
+    const client = await this.pool.connect();
+
+    const queryResponse = await client.query(`
+      SELECT *
+      FROM public.Planrepas Plan
+      NATURAL LEFT JOIN public.Vegetarien
+      NATURAL LEFT JOIN public.Pescetarien
+      NATURAL LEFT JOIN public.Famille
+      NATURAL LEFT JOIN public.Rapide
+      NATURAL LEFT JOIN public.Facile
+      NATURAL LEFT JOIN public.Fournisseur
+      ORDER BY Plan.numeroplan
+    `);
 
     client.release();
 

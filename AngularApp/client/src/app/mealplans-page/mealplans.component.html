@@ -1,0 +1,29 @@
+<mat-card class="card">
+    <mat-card-content class="content">
+        <mat-accordion>
+            <mat-expansion-panel *ngFor="let mealplan of mealplans">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        {{mealplan.id}}
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div class="content">
+                    <label>Catégorie: {{mealplan.category}}</label>
+                    <label>Fréquence: {{mealplan.frequency}}</label>
+                    <label>Nombre de personnes: {{mealplan.nbPeople}}</label>
+                    <label>Calories: {{mealplan.calories}}</label>
+                    <label>Prix: {{mealplan.price}}</label>
+                    <label>Fournisseur: {{mealplan.provider.id}} - {{mealplan.provider.name}}</label>
+                </div>
+                <div class="button-container">
+                    <button mat-mini-fab (click)="openEditDialog(meaplan)" class="action-button">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-mini-fab (click)="openDeleteDialog(mealplan)" class="action-button">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </mat-card-content>
+</mat-card>

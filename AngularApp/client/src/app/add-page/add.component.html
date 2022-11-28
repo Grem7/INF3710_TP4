@@ -3,11 +3,16 @@
     <mat-card-content>
         <form class="form-content" id="add-mealplan-form">
             <mat-form-field appearance="fill">
+                <mat-label>Numéro du plan</mat-label>
+                <input [(ngModel)]="id" matInput type="number" min="0">
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
                 <mat-label>Catégorie</mat-label>
                 <mat-select [(ngModel)]="category">
-                    <mat-option value="Famille">Famille</mat-option>
-                    <mat-option value="Vegetarien">Végétarien</mat-option>
-                    <mat-option value="Pescetarien">Pescétarien</mat-option>
+                    <mat-option value='Famille'>Famille</mat-option>
+                    <mat-option value='Vegetarien'>Végétarien</mat-option>
+                    <mat-option value='Pescetarien'>Pescétarien</mat-option>
                 </mat-select>
             </mat-form-field>
     
@@ -66,11 +71,11 @@
     
             <mat-form-field appearance="fill">
                 <mat-label>Fournisseur</mat-label>
-                <mat-select [(ngModel)]="providerId">
-                    <mat-option *ngFor="let provider of providers" [value]="provider.id">{{ provider.name }}</mat-option>
+                <mat-select [(ngModel)]="provider">
+                    <mat-option *ngFor="let provider of providers" [value]="provider">{{ provider.name }}</mat-option>
                 </mat-select>
             </mat-form-field>
         </form>
-        <button mat-button id="add-button" form="add-mealplan-form" type="submit" value="Submit">Ajouter</button>
+        <button mat-button id="add-button" form="add-mealplan-form" type="submit" value="Submit" (click)="onSubmit()">Ajouter</button>
     </mat-card-content>
 </mat-card>
