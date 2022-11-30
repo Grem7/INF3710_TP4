@@ -24,7 +24,7 @@ export class DatabaseController {
       const id: number = Number(req.params.id);
       console.log(`Attempting to delete mealplan numbered ${id}`);
 
-      this.databaseService.deleteMealplan(id)
+      this.databaseService.deleteRowFromTable('Planrepas', { numeroplan: id })
       .then(result => {
         res.json(result.rowCount);
       })
@@ -42,6 +42,9 @@ export class DatabaseController {
           address: element.adressefournisseur
         } as ProviderInfo));
         res.json(provider);
+      })
+      .catch(e => {
+        console.log(e.stack);
       })
     });
 
@@ -66,30 +69,58 @@ export class DatabaseController {
         } as MealPlanInfo));
         res.json(mealplans);
       })
+      .catch(e => {
+        console.log(e.stack);
+      })
     });
 
-    router.put('/mealplans', async (req, res) => {
-      const mealplan = req.body;
+    router.put('/mealplans/:id', async (req, res) => {
+      const id: number = Number(req.params.id);
+      const delta: any = req.body;
 
-      this.databaseService.updateInTable(
-        'Planrepas',
-        ['numeroplan', mealplan.id],
-        ['categorie', mealplan.category],
-        ['frequence', mealplan.frequency],
-        ['nbpersonnes', mealplan.nbPeople],
-        ['nbcalories', mealplan.calories],
-        ['prix', mealplan.price],
-        ['numerofournisseur', mealplan.provider?.id]
-    )
-    .then(result => {
-      switch(mealplan.category) {
-        case 'Famille':
-          
-        case 'Vegetarien':
+      let values: any = {};
 
-        case 'Pescetarien':
+      if (delta.id) values.numeroplan = delta.id.newValue;
+      if (delta.category) values.categorie = delta.category.newValue;
+      if (delta.frequency) values.frequence = delta.frequency.newValue;
+      if (delta.nbPeople) values.nbpersonnes = delta.nbPeople.newValue;
+      if (delta.calories) values.nbcalories = delta.calories.newValue;
+      if (delta.price) values.prix = delta.price.newValue.newValue;
+      if (delta.provider) values.numerofournisseur = delta.provider.newValue.id;
 
-      }
+      this.databaseService.updateInTable('Planrepas', {numeroplan: id}, values)
+      .then(async result => {
+        // if the category was changed, we need to delete the row in the last category's table...
+        const finalId = delta.id ? delta.id.newValue : id;
+        console.log("New id:"+finalId);
+        if (delta.category) {
+          await this.databaseService.deleteRowFromTable(delta.category.oldValue, { numeroplan: finalId });
+
+          switch (delta.category.newValue) {
+            case 'Vegetarien':
+              await this.databaseService.addRowToTable('Vegetarien', finalId, delta.mealType?.newValue);
+              break;
+
+            case 'Pescetarien':
+              await this.databaseService.addRowToTable('Pescetarien', finalId, delta.fishBreed?.newValue);
+              break;
+
+            case 'Famille':
+              await this.databaseService.addRowToTable('Famille', finalId);
+              if (delta.prepTime) await this.databaseService.addRowToTable('Rapide', finalId, delta.prepTime.newValue);
+              if (delta.nbIngredients) await this.databaseService.addRowToTable('Facile', finalId, delta.nbIngredients.newValue);
+          }
+        }
+        else {
+          if (delta.prepTime) await this.databaseService.updateInTable('Rapide', {numeroplan: finalId}, {tempsdepreparation: delta.prepTime.newValue});
+          if (delta.nbIngredients) await this.databaseService.updateInTable('Facile', {numeroplan: finalId}, {nbingredients: delta.nbIngredients.neValue});
+        }
+        res.json(result.rowCount);
+      })
+      .catch(e => {
+        console.log(e.stack);
+        res.json(-1);
+      })
     });
 
     router.post('/mealplans', async (req, res) => {

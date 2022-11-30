@@ -30,8 +30,8 @@ export class CommunicationService {
     return this.http.get<MealPlanInfo[]>(this.BASE_URL + '/mealplans');
   }
 
-  updateMealplan(mealplan: MealPlanInfo) : Observable<number> {
-    return this.http.put<number>(this.BASE_URL + '/mealplans', mealplan)
+  updateMealplan(id: number, delta: any) : Observable<number> {
+    return this.http.put<number>(this.BASE_URL + `/mealplans/${id}`, delta)
     .pipe(catchError(this.handleError<number>("updateMealplan")));
   }
 
@@ -41,7 +41,7 @@ export class CommunicationService {
     .pipe(catchError(this.handleError<number>("deleteMealplan")));
   }
 
-  addMealplan(mealplan: MealPlanInfo) : Observable<any> {
+  addMealplan(mealplan: MealPlanInfo) : Observable<number> {
     return this.http.post<any>(this.BASE_URL + '/mealplans', mealplan)
     .pipe(catchError(this.handleError<number>("addMealplan")));
   }

@@ -12,6 +12,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MealplanComponent } from "./mealplans-page/mealplans.component";
 import { DeleteDialogComponent } from "./delete-dialog/delete.dialog.component";
 import { EditDialogComponent } from "./edit-dialog/edit.dialog.component";
+import { ErrorDialogComponent } from "./error-dialog/error.dialog.component";
+import { SuccessDialogComponent } from "./success-dialog/success.dialog.component";
 import { AddComponent } from "./add-page/add.component";
 
 @NgModule({
@@ -20,7 +22,9 @@ import { AddComponent } from "./add-page/add.component";
     AddComponent,
     MealplanComponent,
     EditDialogComponent,
-    DeleteDialogComponent
+    DeleteDialogComponent,
+    ErrorDialogComponent,
+    SuccessDialogComponent
   ],
   imports: [
     CommonModule,

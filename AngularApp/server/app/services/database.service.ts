@@ -48,30 +48,57 @@ export class DatabaseService {
     return queryResponse;
   }
 
-  public async updateInTable(tableName: string, ...colValuePair: [any, any][]) : Promise<pg.QueryResult> {
+  public async updateInTable(tableName: string, condition: any, data: any) : Promise<pg.QueryResult> {
     const client = await this.pool.connect();
     
-    const format: string[] = [];
+    const conditions: string[] = [];
+    const sets: string[] = [];
     const values: any[] = [];
     
-    for (let i = 0; i < colValuePair.length; i++) {
-      format.push(`${colValuePair[i][0]} = $${i}`);
-      values.push(colValuePair[i][1]);
+
+    let valueIndex: number = 1;
+    for (const key in data) {
+      sets.push(`${key} = $${valueIndex++}`);
+      values.push(data[key]);
     }
 
-    const queryResponse = client.query(`UPDATE public.${tableName} SET ${format.join()}`, values);
+    for (const key in condition) {
+      conditions.push(`${key} = $${valueIndex++}`);
+      values.push(condition[key]);
+    }
+
+    console.log(`
+    UPDATE public.${tableName}
+    SET ${sets.join()}
+    WHERE ${conditions.join()}`);
+    console.log(values);
+
+    const queryResponse = client.query(`
+    UPDATE public.${tableName}
+    SET ${sets.join()}
+    WHERE ${conditions.join()}`,
+    values);
 
     client.release();
 
     return queryResponse;
   }
 
-  public async deleteMealplan(id: number) : Promise<pg.QueryResult> {
+  public async deleteRowFromTable(tableName: string, condition: any) : Promise<pg.QueryResult> {
     const client = await this.pool.connect();
 
+    const conditions: string[] = [];
+    const values: any[] = [];
+
+    let valueIndex = 1;
+    for (const key in condition) {
+      conditions.push(`${key} = $${valueIndex}`);
+      values.push(condition[key]);
+    }
+
     const queryResponse = await client.query(`
-      DELETE FROM public.Planrepas WHERE numeroplan = ${id}
-    `);
+      DELETE FROM public.${tableName} WHERE ${conditions.join()}
+    `, values);
 
     client.release();
 

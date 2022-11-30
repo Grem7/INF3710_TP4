@@ -10,22 +10,49 @@ import { CommunicationService } from "../services/communication.service";
   styleUrls: ["./edit.dialog.component.css"],
 })
 export class EditDialogComponent implements OnInit {
-    mealplan: MealPlanInfo;
+    editedMealplan: any;
+    originalMealplan: MealPlanInfo;
     subcategory: string;
     providers: ProviderInfo[];
 
     constructor (public communicationService: CommunicationService, public dialogRef: MatDialogRef<EditDialogComponent>, @Inject(MAT_DIALOG_DATA) data: MealPlanInfo) {
-        this.mealplan = data;
+        this.originalMealplan = data;
+        this.editedMealplan = {};
 
-        if (this.mealplan.category == 'Famille' && (this.mealplan as any).prepTime) this.subcategory = 'Rapide';
-        if (this.mealplan.category == 'Famille' && (this.mealplan as any).nbIngredients) this.subcategory = 'Facile';
+        for (const key in data) (this.editedMealplan)[key] = (data as any)[key]; // We copy everything from data over to editedMealplan
+
+        if (data.category == 'Famille' && (data as any).prepTime) this.subcategory = 'Rapide';
+        if (data.category == 'Famille' && (data as any).nbIngredients) this.subcategory = 'Facile';
     }
 
     public ngOnInit(): void {
         this.communicationService.getProviders().subscribe(newProviders => {
-            const currentProvider = newProviders.find(el => el.id = this.mealplan.provider.id);
-            if (currentProvider) this.mealplan.provider = currentProvider;
-            this.providers = newProviders
+            const currentProvider = newProviders.find(el => el.id = this.editedMealplan.provider.id);
+            if (currentProvider) this.editedMealplan.provider = currentProvider;
+            this.providers = newProviders;
         });
+    }
+
+    public getDelta(): any {
+        const delta: any = {};
+        
+        for (const key in this.editedMealplan) {
+            if (this.editedMealplan[key] != (this.originalMealplan as any)[key]) {
+                delta[key] = {
+                    oldValue: (this.originalMealplan as any)[key],
+                    newValue: this.editedMealplan[key]
+                }
+            }
+        }
+        for (const key in this.originalMealplan) {
+            if (this.editedMealplan[key] != (this.originalMealplan as any)[key] && !delta[key]) {
+                delta[key] = {
+                    oldValue: (this.originalMealplan as any)[key],
+                    newValue: this.editedMealplan[key]
+                }
+            }
+        }
+        
+        return delta;
     }
 }
