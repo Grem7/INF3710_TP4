@@ -27,10 +27,22 @@ export class AddComponent implements OnInit {
     provider: ProviderInfo;
     providers: ProviderInfo[];
 
-    constructor (private communicationService: CommunicationService, private dialog: MatDialog) {}
+    constructor (private communicationService: CommunicationService, private dialog: MatDialog) {
+      this.id = 20;
+      this.category = 'Vegetarien';
+      this.mealType = 'Tofu';
+      this.frequency = 'Mensuel';
+      this.calories = 400;
+      this.nbPeople = 2;
+      this.price = 60.0;
+    }
 
     public ngOnInit(): void {
-        this.communicationService.getProviders().subscribe((newProviders) => this.providers = newProviders);
+        this.communicationService.getProviders().subscribe((newProviders) => {
+          console.log(newProviders);
+          this.providers = newProviders;
+          if (this.providers.length > 0) this.provider = this.providers[0];
+        });
     }
 
     public displayError(msg: string) {

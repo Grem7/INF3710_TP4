@@ -6,6 +6,7 @@ import { DeleteDialogComponent } from "../delete-dialog/delete.dialog.component"
 import { EditDialogComponent } from "../edit-dialog/edit.dialog.component";
 import { ErrorDialogComponent } from "../error-dialog/error.dialog.component";
 import { SuccessDialogComponent } from "../success-dialog/success.dialog.component";
+import { ProviderInfo } from "../../../../common/tables/provider-info";
 
 @Component({
   selector: "mealplans-page",
@@ -14,14 +15,21 @@ import { SuccessDialogComponent } from "../success-dialog/success.dialog.compone
 })
 export class MealplanComponent implements OnInit {
     mealplans: MealPlanInfo[];
+    providers: ProviderInfo[];
+
     constructor (private communicationService: CommunicationService, private dialog: MatDialog) {}
 
     public ngOnInit(): void {
         this.fetchMealplans();
+        this.fetchProviders();
     }
 
     public fetchMealplans() {
         this.communicationService.getMealplans().subscribe((newMealplans: MealPlanInfo[]) => this.mealplans = newMealplans);
+    }
+
+    public fetchProviders() {
+        this.communicationService.getProviders().subscribe((newProviders: ProviderInfo[]) => {this.providers = newProviders; console.log(newProviders)});
     }
 
     public displayError(msg: string) {
@@ -38,15 +46,20 @@ export class MealplanComponent implements OnInit {
         });
       }
 
-    public openEditDialog(mealplan: MealPlanInfo) {
+    public openEditDialog(mealplanToEdit: MealPlanInfo) {
+        console.log(this.providers);
+        
         this.dialog.open(EditDialogComponent, {
-            data: mealplan,
+            data: {
+                mealplan: mealplanToEdit,
+                providers: this.providers
+            },
             minWidth: '500px'
         })
         .afterClosed().subscribe(delta => {
             if (!delta) return;
 
-            this.communicationService.updateMealplan(mealplan.id, delta).subscribe(rowCount => {
+            this.communicationService.updateMealplan(mealplanToEdit.id, delta).subscribe(rowCount => {
                 this.fetchMealplans();
                 if (rowCount < 0) this.displayError("Les nouvelles valeurs entrées n'étaient pas toutes valides");
                 else this.displaySuccess("La modification est été effectuée avec succès!");

@@ -3,12 +3,12 @@
 <mat-dialog-content class="content">
     <mat-form-field appearance="fill">
         <mat-label>Numéro du plan</mat-label>
-        <input [(ngModel)]="editedMealplan.id" matInput type="number" min="0">
+        <input [(value)]="editedMealplan.id" matInput type="number" min="0">
     </mat-form-field>
 
     <mat-form-field appearance="fill">
         <mat-label>Catégorie</mat-label>
-        <mat-select [(ngModel)]="editedMealplan.category">
+        <mat-select [(value)]="editedMealplan.category">
             <mat-option value='Famille'>Famille</mat-option>
             <mat-option value='Vegetarien'>Végétarien</mat-option>
             <mat-option value='Pescetarien'>Pescétarien</mat-option>
@@ -17,7 +17,7 @@
 
     <mat-form-field *ngIf="editedMealplan.category=='Famille'" appearance="fill">
         <mat-label>Sous-catégorie</mat-label>
-        <mat-select [(ngModel)]="subcategory">
+        <mat-select [(value)]="subcategory">
             <mat-option value="Rapide">Rapide</mat-option>
             <mat-option value="Facile">Facile</mat-option>
         </mat-select>
@@ -26,28 +26,28 @@
     <div *ngIf="editedMealplan.category=='Famille'">
         <mat-form-field *ngIf="subcategory == 'Rapide'" appearance="fill">
             <mat-label>Temps de préparation</mat-label>
-            <input [(ngModel)]="editedMealplan.prepTime" matInput type="text">
+            <input [(value)]="editedMealplan.prepTime" matInput type="text">
         </mat-form-field>
     
         <mat-form-field *ngIf="subcategory=='Facile'" appearance="fill">
             <mat-label>Nombre d'ingrédients</mat-label>
-            <input [(ngModel)]="editedMealplan.nbIngredients" matInput type="text">
+            <input [(value)]="editedMealplan.nbIngredients" matInput type="text">
         </mat-form-field>
     </div>
 
     <mat-form-field *ngIf="editedMealplan.category=='Vegetarien'" appearance="fill">
         <mat-label>Type de repas</mat-label>
-        <input [(ngModel)]="editedMealplan.mealType" matInput type="text">
+        <input [(value)]="editedMealplan.mealType" matInput type="text">
     </mat-form-field>
 
     <mat-form-field *ngIf="editedMealplan.category=='Pescetarien'" appearance="fill">
         <mat-label>Type de poisson</mat-label>
-        <input [(ngModel)]="editedMealplan.fishBreed" matInput type="text">
+        <input [(value)]="editedMealplan.fishBreed" matInput type="text">
     </mat-form-field>
 
     <mat-form-field appearance="fill">
         <mat-label>Fréquence</mat-label>
-        <mat-select [(ngModel)]="editedMealplan.frequency">
+        <mat-select [(value)]="editedMealplan.frequency">
             <mat-option value="Quotidien">Quotidien</mat-option>
             <mat-option value="Hebdomadaire">Hebdomadaire</mat-option>
             <mat-option value="Bihebdomadaire">Bihebdomadaire</mat-option>
@@ -57,22 +57,22 @@
 
     <mat-form-field appearance="fill">
         <mat-label>Calories</mat-label>
-        <input [(ngModel)]="editedMealplan.calories" matInput type="number" min="0">
+        <input [(value)]="editedMealplan.calories" matInput type="number" min="0">
     </mat-form-field>
 
     <mat-form-field appearance="fill">
         <mat-label>Nombre de personnes</mat-label>
-        <input [(ngModel)]="editedMealplan.nbPeople"matInput type="number" min="0" step="1">
+        <input [(value)]="editedMealplan.nbPeople"matInput type="number" min="0" step="1">
     </mat-form-field>
 
     <mat-form-field appearance="fill">
         <mat-label>Prix</mat-label>
-        <input [(ngModel)]="editedMealplan.price" matInput type="number" min="0">
+        <input [(value)]="editedMealplan.price" matInput type="number" min="0">
     </mat-form-field>
 
     <mat-form-field appearance="fill">
         <mat-label>Fournisseur</mat-label>
-        <mat-select [(ngModel)]="editedMealplan.provider">
+        <mat-select [(value)]="editedMealplan.provider">
             <mat-option *ngFor="let provider of providers" [value]="provider">{{ provider.name }}</mat-option>
         </mat-select>
     </mat-form-field>

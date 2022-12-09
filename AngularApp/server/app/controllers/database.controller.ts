@@ -36,12 +36,13 @@ export class DatabaseController {
     
     router.get('/providers', async (req, res) => {
       this.databaseService.getAllFromTable('Fournisseur').then(result => {
-        const provider: ProviderInfo[] = result.rows.map(element => ({
+        const providers: ProviderInfo[] = result.rows.map(element => ({
           id: element.numerofournisseur,
           name: element.nomfournisseur,
           address: element.adressefournisseur
         } as ProviderInfo));
-        res.json(provider);
+        console.log(providers);
+        res.json(providers);
       })
       .catch(e => {
         console.log(e.stack);
@@ -107,13 +108,15 @@ export class DatabaseController {
 
             case 'Famille':
               await this.databaseService.addRowToTable('Famille', finalId);
-              if (delta.prepTime) await this.databaseService.addRowToTable('Rapide', finalId, delta.prepTime.newValue);
-              if (delta.nbIngredients) await this.databaseService.addRowToTable('Facile', finalId, delta.nbIngredients.newValue);
+              if (delta.prepTime) await this.databaseService.addRowToTable('Rapide', finalId, delta.prepTime.newValue).catch(e => {console.log(e.stack); res.json(-1)});
+              if (delta.nbIngredients) await this.databaseService.addRowToTable('Facile', finalId, delta.nbIngredients.newValue).catch(e => {console.log(e.stack); res.json(-1)});
           }
         }
         else {
-          if (delta.prepTime) await this.databaseService.updateInTable('Rapide', {numeroplan: finalId}, {tempsdepreparation: delta.prepTime.newValue});
-          if (delta.nbIngredients) await this.databaseService.updateInTable('Facile', {numeroplan: finalId}, {nbingredients: delta.nbIngredients.neValue});
+          if (delta.prepTime) await this.databaseService.updateInTable('Rapide', {numeroplan: finalId}, {tempsdepreparation: delta.prepTime.newValue}).catch(e => {console.log(e.stack); res.json(-1)});
+          if (delta.nbIngredients) await this.databaseService.updateInTable('Facile', {numeroplan: finalId}, {nbingredients: delta.nbIngredients.newValue}).catch(e => {console.log(e.stack); res.json(-1)});
+          if (delta.mealType) await this.databaseService.updateInTable('Vegetarien', {numeroplan: finalId}, {typederepas: delta.mealType.newValue}).catch(e => {console.log(e.stack); res.json(-1)});
+          if (delta.fishBreed) await this.databaseService.updateInTable('Pescetarien', {numeroplan: finalId}, {typederepas: delta.fishBreed.newValue}).catch(e => {console.log(e.stack); res.json(-1)});
         }
         res.json(result.rowCount);
       })

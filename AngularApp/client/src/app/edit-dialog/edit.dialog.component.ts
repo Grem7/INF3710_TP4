@@ -15,22 +15,26 @@ export class EditDialogComponent implements OnInit {
     subcategory: string;
     providers: ProviderInfo[];
 
-    constructor (public communicationService: CommunicationService, public dialogRef: MatDialogRef<EditDialogComponent>, @Inject(MAT_DIALOG_DATA) data: MealPlanInfo) {
-        this.originalMealplan = data;
+    constructor (public communicationService: CommunicationService, public dialogRef: MatDialogRef<EditDialogComponent>, @Inject(MAT_DIALOG_DATA) data: any) {
+        this.originalMealplan = data.mealplan;
+        this.providers = data.providers;
         this.editedMealplan = {};
 
-        for (const key in data) (this.editedMealplan)[key] = (data as any)[key]; // We copy everything from data over to editedMealplan
+        for (const key in this.originalMealplan) (this.editedMealplan)[key] = (this.originalMealplan as any)[key]; // We copy everything from data over to editedMealplan
 
         if (data.category == 'Famille' && (data as any).prepTime) this.subcategory = 'Rapide';
         if (data.category == 'Famille' && (data as any).nbIngredients) this.subcategory = 'Facile';
+
+        for (const provider of this.providers) {
+            if (provider.id == this.originalMealplan.provider.id) {
+                this.editedMealplan.provider = provider;
+                break;
+            }
+        }
     }
 
     public ngOnInit(): void {
-        this.communicationService.getProviders().subscribe(newProviders => {
-            const currentProvider = newProviders.find(el => el.id = this.editedMealplan.provider.id);
-            if (currentProvider) this.editedMealplan.provider = currentProvider;
-            this.providers = newProviders;
-        });
+
     }
 
     public getDelta(): any {

@@ -52,12 +52,13 @@ let DatabaseController = class DatabaseController {
         }));
         router.get('/providers', (req, res) => __awaiter(this, void 0, void 0, function* () {
             this.databaseService.getAllFromTable('Fournisseur').then(result => {
-                const provider = result.rows.map(element => ({
+                const providers = result.rows.map(element => ({
                     id: element.numerofournisseur,
                     name: element.nomfournisseur,
                     address: element.adressefournisseur
                 }));
-                res.json(provider);
+                console.log(providers);
+                res.json(providers);
             })
                 .catch(e => {
                 console.log(e.stack);
@@ -124,16 +125,20 @@ let DatabaseController = class DatabaseController {
                         case 'Famille':
                             yield this.databaseService.addRowToTable('Famille', finalId);
                             if (delta.prepTime)
-                                yield this.databaseService.addRowToTable('Rapide', finalId, delta.prepTime.newValue);
+                                yield this.databaseService.addRowToTable('Rapide', finalId, delta.prepTime.newValue).catch(e => { console.log(e.stack); res.json(-1); });
                             if (delta.nbIngredients)
-                                yield this.databaseService.addRowToTable('Facile', finalId, delta.nbIngredients.newValue);
+                                yield this.databaseService.addRowToTable('Facile', finalId, delta.nbIngredients.newValue).catch(e => { console.log(e.stack); res.json(-1); });
                     }
                 }
                 else {
                     if (delta.prepTime)
-                        yield this.databaseService.updateInTable('Rapide', { numeroplan: finalId }, { tempsdepreparation: delta.prepTime.newValue });
+                        yield this.databaseService.updateInTable('Rapide', { numeroplan: finalId }, { tempsdepreparation: delta.prepTime.newValue }).catch(e => { console.log(e.stack); res.json(-1); });
                     if (delta.nbIngredients)
-                        yield this.databaseService.updateInTable('Facile', { numeroplan: finalId }, { nbingredients: delta.nbIngredients.neValue });
+                        yield this.databaseService.updateInTable('Facile', { numeroplan: finalId }, { nbingredients: delta.nbIngredients.newValue }).catch(e => { console.log(e.stack); res.json(-1); });
+                    if (delta.mealType)
+                        yield this.databaseService.updateInTable('Vegetarien', { numeroplan: finalId }, { typederepas: delta.mealType.newValue }).catch(e => { console.log(e.stack); res.json(-1); });
+                    if (delta.fishBreed)
+                        yield this.databaseService.updateInTable('Pescetarien', { numeroplan: finalId }, { typederepas: delta.fishBreed.newValue }).catch(e => { console.log(e.stack); res.json(-1); });
                 }
                 res.json(result.rowCount);
             }))
