@@ -93,6 +93,7 @@ let DatabaseController = class DatabaseController {
             const id = Number(req.params.id);
             const delta = req.body;
             let values = {};
+            console.log(delta);
             if (delta.id)
                 values.numeroplan = delta.id.newValue;
             if (delta.category)
@@ -104,7 +105,7 @@ let DatabaseController = class DatabaseController {
             if (delta.calories)
                 values.nbcalories = delta.calories.newValue;
             if (delta.price)
-                values.prix = delta.price.newValue.newValue;
+                values.prix = delta.price.newValue;
             if (delta.provider)
                 values.numerofournisseur = delta.provider.newValue.id;
             this.databaseService.updateInTable('Planrepas', { numeroplan: id }, values)

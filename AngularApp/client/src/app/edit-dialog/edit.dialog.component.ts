@@ -20,10 +20,10 @@ export class EditDialogComponent implements OnInit {
         this.providers = data.providers;
         this.editedMealplan = {};
 
-        for (const key in this.originalMealplan) (this.editedMealplan)[key] = (this.originalMealplan as any)[key]; // We copy everything from data over to editedMealplan
+        for (const key in this.originalMealplan) this.editedMealplan[key] = (this.originalMealplan as any)[key]; // We copy everything from data over to editedMealplan
 
-        if (data.category == 'Famille' && (data as any).prepTime) this.subcategory = 'Rapide';
-        if (data.category == 'Famille' && (data as any).nbIngredients) this.subcategory = 'Facile';
+        if (this.originalMealplan.category == 'Famille' && (this.originalMealplan as any).prepTime) this.subcategory = 'Rapide';
+        if (this.originalMealplan.category == 'Famille' && (this.originalMealplan as any).nbIngredients) this.subcategory = 'Facile';
 
         for (const provider of this.providers) {
             if (provider.id == this.originalMealplan.provider.id) {
@@ -41,22 +41,27 @@ export class EditDialogComponent implements OnInit {
         const delta: any = {};
         
         for (const key in this.editedMealplan) {
-            if (this.editedMealplan[key] != (this.originalMealplan as any)[key]) {
-                delta[key] = {
-                    oldValue: (this.originalMealplan as any)[key],
-                    newValue: this.editedMealplan[key]
-                }
+            if (
+                key == 'provider' && this.editedMealplan.provider?.id == this.originalMealplan.provider?.id
+                || this.editedMealplan[key] == (this.originalMealplan as any)[key]
+            ) continue;
+            
+            delta[key] = {
+                oldValue: (this.originalMealplan as any)[key],
+                newValue: this.editedMealplan[key]
             }
         }
         for (const key in this.originalMealplan) {
-            if (this.editedMealplan[key] != (this.originalMealplan as any)[key] && !delta[key]) {
-                delta[key] = {
-                    oldValue: (this.originalMealplan as any)[key],
-                    newValue: this.editedMealplan[key]
-                }
+            if (
+                key == 'provider' && this.editedMealplan.provider?.id == this.originalMealplan.provider?.id
+                || this.editedMealplan[key] == (this.originalMealplan as any)[key]
+            ) continue;
+            
+            delta[key] = {
+                oldValue: (this.originalMealplan as any)[key],
+                newValue: this.editedMealplan[key]
             }
         }
-        
         return delta;
     }
 }

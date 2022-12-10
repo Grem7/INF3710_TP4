@@ -81,12 +81,14 @@ export class DatabaseController {
 
       let values: any = {};
 
+      console.log(delta);
+
       if (delta.id) values.numeroplan = delta.id.newValue;
       if (delta.category) values.categorie = delta.category.newValue;
       if (delta.frequency) values.frequence = delta.frequency.newValue;
       if (delta.nbPeople) values.nbpersonnes = delta.nbPeople.newValue;
       if (delta.calories) values.nbcalories = delta.calories.newValue;
-      if (delta.price) values.prix = delta.price.newValue.newValue;
+      if (delta.price) values.prix = delta.price.newValue;
       if (delta.provider) values.numerofournisseur = delta.provider.newValue.id;
 
       this.databaseService.updateInTable('Planrepas', {numeroplan: id}, values)

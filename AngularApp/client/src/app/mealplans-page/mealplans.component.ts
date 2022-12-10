@@ -57,8 +57,8 @@ export class MealplanComponent implements OnInit {
             minWidth: '500px'
         })
         .afterClosed().subscribe(delta => {
-            if (!delta) return;
-
+            if (!delta || Object.keys(delta).length == 0) return;
+            console.log(delta);
             this.communicationService.updateMealplan(mealplanToEdit.id, delta).subscribe(rowCount => {
                 this.fetchMealplans();
                 if (rowCount < 0) this.displayError("Les nouvelles valeurs entrées n'étaient pas toutes valides");
